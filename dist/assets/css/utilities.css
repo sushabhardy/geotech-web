@@ -1,0 +1,14 @@
+
+.text-tertiary{
+    color: var(--blue);
+}
+
+.text-secondary{
+    color: white;
+}
+.text-primary{
+    color: var(--green);
+}
+.align-center{
+    margin: 0 auto;
+}
