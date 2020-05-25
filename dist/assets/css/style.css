@@ -1805,7 +1805,8 @@ button:hover{
         flex-direction: row;
         margin-top: 2rem;
         padding: 4rem 3.125rem 0 3.125rem;
-        justify-content: flex-start;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .work__heading{
