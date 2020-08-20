@@ -17,7 +17,6 @@ const carouselTint = document.querySelector(".carousel__tint");
 
 const albumModal = document.querySelector(".album__modal");
 const albumModalImage = document.querySelector(".album__modal__image");
-const albums = document.querySelectorAll(".album");
 
 window.initMap = () => {
     var amravati = {
@@ -111,16 +110,20 @@ navLinksDesktop.forEach(navLink => linkHandler(navLink));
 const applyButtonBasic = document.querySelector(".course__apply--basic")
 const applyButtonAdvanced = document.querySelector(".course__apply--advanced")
 const applyButtonDiploma = document.querySelector(".course__apply--diploma")
+const sendQueryButton = document.getElementById("popup__nav__queryBtn")
 
 const applyHandler = () => {
-    console.log("asd")
-    let scroll  = new SmoothScroll();
     document.getElementById("footer").scrollIntoView();
 }
 
 applyButtonBasic.addEventListener("click", applyHandler);
 applyButtonAdvanced.addEventListener("click", applyHandler);
 applyButtonDiploma.addEventListener("click", applyHandler);
+sendQueryButton.addEventListener('click', () => {
+    togglePopupNavbar();
+    applyHandler()
+})
+
 
 /**
  * Query Form
@@ -163,13 +166,15 @@ const submitFormHandler = (e) => {
             name: name.value,
             mobile: isPhone ? emailOrPhone.value : "-",
             email: isEmail ? emailOrPhone.value : "-",
-            query: query.value
+            query: query.value,
+            date: new Date().toISOString()
         }
         formErrorMessage.classList.remove("show");
         // Send data to sheet
         e.preventDefault();
         loader.style.display = "block";
         plane.style.opacity = 0;
+        document.querySelector("#date").value = new Date().toUTCString()
         const formo = document.forms['query-form']
         fetch(
             scriptURL, 
@@ -228,10 +233,10 @@ main.addEventListener("mouseover", () => {
 let carouselInterval ;
 const carouselHandler = (albumName, albumSize) => {
     if(window.i != albumSize-1){
-        const str = `/assets/images/albums/${albumName}/${window.i++}.jpg`;
+        const str = `/assets/images/albums/${albumName}/${window.i++}.webp`;
         albumModalImage.setAttribute("src", str);
     } else {
-        const str = `/assets/images/albums/${albumName}/thumbnail.jpg`;
+        const str = `/assets/images/albums/${albumName}/thumbnail.webp`;
         clearInterval(carouselInterval);
         albumModalImage.setAttribute("src",str);
         albumModal.style.display = "none";
@@ -240,6 +245,7 @@ const carouselHandler = (albumName, albumSize) => {
 }
 
 const albumHandler = (album) => {
+    clearInterval(carouselInterval)
     carouselTint.style.display = "block";
     const albumName = album.dataset.album;
     const albumSize = album.dataset.size;
@@ -247,18 +253,21 @@ const albumHandler = (album) => {
     carouselInterval = setInterval(
         carouselHandler.bind(null, albumName, albumSize), 
         2000);
-    const str = `/assets/images/albums/${albumName}/thumbnail.jpg`;
+    const str = `/assets/images/albums/${albumName}/thumbnail.webp`;
     albumModalImage.setAttribute("src", str);
     albumModal.style.display = "flex";
 }
+const albums = document.querySelectorAll(".album");
 
 albums.forEach(album => {
     album.addEventListener("click", albumHandler.bind(this, album));
 });
 
+// close carousel
 carouselTint.addEventListener('click', () => {
     if(albumModal.style.display === "flex"){
         albumModal.style.display = "none";
         carouselTint.style.display = "none";
     }
+    clearInterval(carouselInterval)
 })
